@@ -1,13 +1,13 @@
-using System.Collections;
 using UnityEngine;
 using TMPro;
+
 public class Timer : MonoBehaviour
 {
     public TMP_Text timerText;
-    private float totalTime = 601f;
-    private float elapsedTime = 0f;
-    private bool timerRunning = false;
-    private bool isPaused = false; 
+    private const float TotalTime = 601f;
+    private float _elapsedTime;
+    private bool _timerRunning;
+    private bool _isPaused;
 
     void Start()
     {
@@ -16,38 +16,40 @@ public class Timer : MonoBehaviour
 
     void Update()
     {
-        if (timerRunning && !isPaused)
+        if (_timerRunning && !_isPaused)
         {
-            elapsedTime += Time.deltaTime;
+            _elapsedTime += Time.deltaTime;
             UpdateTimerUI();
-            if (elapsedTime >= totalTime)
+            if (_elapsedTime >= TotalTime)
             {
-                timerRunning = false;
+                _timerRunning = false;
             }
         }
     }
 
     void StartTimer()
     {
-        timerRunning = true;
+        _timerRunning = true;
         UpdateTimerUI();
     }
 
     void UpdateTimerUI()
     {
-        float timeLeft = totalTime - elapsedTime;
-        int minutes = Mathf.FloorToInt(timeLeft / 60);
-        int seconds = Mathf.FloorToInt(timeLeft % 60);
-        timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
+        var timeLeft = TotalTime - _elapsedTime;
+        var minutes = Mathf.FloorToInt(timeLeft / 60);
+        var seconds = Mathf.FloorToInt(timeLeft % 60);
+        timerText.text = $"{minutes:00}:{seconds:00}";                        // string.Format("{0:00}:{1:00}", minutes, seconds);
+
+
     }
 
     public void PauseTimer()
     {
-        isPaused = true;
+        _isPaused = true;
     }
 
     public void ResumeTimer()
     {
-        isPaused = false;
+        _isPaused = false;
     }
 }

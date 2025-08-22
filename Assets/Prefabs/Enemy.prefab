@@ -206,7 +206,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackRange: 1.6
-  swordStabSFX: {fileID: 8300000, guid: f31c04aebff806145b4f39add0932679, type: 3}
+  swordStabSfx: {fileID: 8300000, guid: f31c04aebff806145b4f39add0932679, type: 3}
 --- !u!114 &454151067516543396
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -232,5 +232,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 899fe6caaa8207c459c344c07ff53a09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  effect: {fileID: 0}
+  effect: {fileID: 1529007030392519869, guid: 62e5a7e0c7eec1a449bc661240048e51, type: 3}
   enemyData: {fileID: 11400000, guid: 30da908dea6fe764aa1c2f78e84c4e99, type: 2}

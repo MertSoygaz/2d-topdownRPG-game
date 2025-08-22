@@ -6886,7 +6886,7 @@ MonoBehaviour:
   waveText: {fileID: 1899260328}
   displayDuration: 2.5
   fadeDuration: 0.75
-  whooshSFX: {fileID: 8300000, guid: 397c42408510cdb429e8a69976aa6ee1, type: 3}
+  whooshSfx: {fileID: 8300000, guid: 397c42408510cdb429e8a69976aa6ee1, type: 3}
 --- !u!114 &1712957164
 MonoBehaviour:
   m_ObjectHideFlags: 0

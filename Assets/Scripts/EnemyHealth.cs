@@ -4,15 +4,12 @@ using DG.Tweening;
 public class EnemyHealth : MonoBehaviour
 {
     public int health = 1;
-    private SpriteRenderer spriteRenderer;
-    private Color originalColor;
+    private SpriteRenderer _spriteRenderer;
 
 
     private void Awake()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        if (spriteRenderer != null)
-            originalColor = spriteRenderer.color;
+        _spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     public void TakeDamage(int damage)
@@ -24,15 +21,11 @@ public class EnemyHealth : MonoBehaviour
 
             GetComponent<EnemyFollow>().speed = 3f;                  // speed boost
           
-            if (spriteRenderer != null)
+            if (_spriteRenderer != null)
             {
-                spriteRenderer.DOColor(Color.red, 0.3f);            
+                _spriteRenderer.DOColor(Color.red, 0.3f);            
             }
         }
-
-        if (health <= 0)
-        {
-            Destroy(gameObject);
-        }
+        
     }
 }

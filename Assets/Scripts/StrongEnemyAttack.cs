@@ -3,48 +3,48 @@ using UnityEngine;
 public class StrongEnemyAttack : MonoBehaviour
 {
     public float attackRange = 1.75f;
-    private GameObject player;
-    private Animator animator;
-    public AudioClip swordStabSFX;
+    private GameObject _player;
+    private Animator _animator;
+    [SerializeField] private AudioClip swordStabSfx;
 
-    private bool hasHitThisAttack = false;
+    private bool _hasHitThisAttack;
 
     void Start()
     {
-        player = GameObject.FindGameObjectWithTag("Player");
-        animator = GetComponent<Animator>();
+        _player = GameObject.FindGameObjectWithTag("Player");
+        _animator = GetComponent<Animator>();
     }
 
     void Update()
     {
-        if (player == null) return;
+        if (_player == null) return;
 
-        float distanceToPlayer = Vector2.Distance(transform.position, player.transform.position);
+        float distanceToPlayer = Vector2.Distance(transform.position, _player.transform.position);
 
         if (distanceToPlayer <= attackRange)
         {
-            if (!animator.GetCurrentAnimatorStateInfo(0).IsName("StrongEnemyAttacking"))
+            if (!_animator.GetCurrentAnimatorStateInfo(0).IsName("StrongEnemyAttacking"))
             {
-                animator.SetTrigger("strongEnemyAttack");
-                hasHitThisAttack = false; 
+                _animator.SetTrigger("strongEnemyAttack");
+                _hasHitThisAttack = false; 
             }
         }
     }
 
     private void OnCollisionStay2D(Collision2D collision)
     {
-        if (hasHitThisAttack) return;
+        if (_hasHitThisAttack) return;
 
         if (collision.gameObject.CompareTag("Player"))
         {
-            if (animator.GetCurrentAnimatorStateInfo(0).IsName("StrongEnemyAttacking"))
+            if (_animator.GetCurrentAnimatorStateInfo(0).IsName("StrongEnemyAttacking"))
             {
                 Debug.Log("Hit");
-                hasHitThisAttack = true;
+                _hasHitThisAttack = true;
 
                 AudioListener listener = FindFirstObjectByType<AudioListener>();
                 Vector3 audioPosition = listener != null ? listener.transform.position : Vector3.zero;
-                AudioSource.PlayClipAtPoint(swordStabSFX, audioPosition);
+                AudioSource.PlayClipAtPoint(swordStabSfx, audioPosition);
 
 
                 float damage = 0.1f;

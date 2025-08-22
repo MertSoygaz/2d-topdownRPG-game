@@ -5591,11 +5591,12 @@ MonoBehaviour:
   arrowPrefab: {fileID: 6811157402203788393, guid: 61928de3157be314cb822995fc088d7b, type: 3}
   redHitEffect: {fileID: 1529007030392519869, guid: 62e5a7e0c7eec1a449bc661240048e51, type: 3}
   blackHitEffect: {fileID: 1529007030392519869, guid: 4f5d6cbf29baef040a0a873cd545a581, type: 3}
-  shootSFX: {fileID: 8300000, guid: a9267dc8a26eaef4f89fc14fae3b728f, type: 3}
-  shootInterval: 2
-  arrowSpeed: 25
+  shootSfx: {fileID: 8300000, guid: a9267dc8a26eaef4f89fc14fae3b728f, type: 3}
+  spawner: {fileID: 1673671675}
   rangeDetector: {fileID: 1799863505}
   animator: {fileID: 1437036546}
+  shootInterval: 2
+  arrowSpeed: 25
   arrowCount: 1
 --- !u!1001 &1456156627
 PrefabInstance:
@@ -5866,6 +5867,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyPrefab: {fileID: 6038028943035029918, guid: 96423bc1fe903cf43babcb8fcf00a5bd, type: 3}
   strongEnemyPrefab: {fileID: 5008120065480511195, guid: 37c004453480e174baf63503f237e5d6, type: 3}
+  enemyPoolSize: 70
+  strongEnemyPoolSize: 40
   spawnDistance: 30
 --- !u!4 &1673671676
 Transform:
@@ -5989,7 +5992,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a32dd38b9c772fd4ebb2a276b99458a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemiesInRange: []
 --- !u!61 &1799863507
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -6541,7 +6543,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3789694326994009278, guid: 1eb3becdb341059458af67cdcbfe1813, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.52
+      value: 4.78
       objectReference: {fileID: 0}
     - target: {fileID: 3789694326994009278, guid: 1eb3becdb341059458af67cdcbfe1813, type: 3}
       propertyPath: m_LocalPosition.y

@@ -5,7 +5,7 @@ public class SceneLoader : MonoBehaviour
 {
     void Start()
     {
-        // HUD sahnesini additive olarak yükle
+        // Load HUD Scene as Additive
         SceneManager.LoadScene("HUD", LoadSceneMode.Additive);
     }
 }

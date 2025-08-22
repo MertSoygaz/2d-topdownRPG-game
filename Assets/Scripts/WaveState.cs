@@ -1,14 +1,15 @@
 using UnityEngine;
 using TMPro;
 using System.Collections;
+using DG.Tweening; 
 
 public class WaveState : MonoBehaviour
 {
     public static WaveState Instance;
-    public TMP_Text waveText;
-    public float displayDuration = 3f;
-    public float fadeDuration = 0.75f;
-    public AudioClip whooshSFX;
+    [SerializeField] private TMP_Text waveText;
+    [SerializeField] private float displayDuration = 3f;
+    [SerializeField] private float fadeDuration = 0.75f;
+    [SerializeField] private AudioClip whooshSfx;
 
     private void Awake()
     {
@@ -33,28 +34,16 @@ public class WaveState : MonoBehaviour
 
         AudioListener listener = FindFirstObjectByType<AudioListener>();
         Vector3 audioPosition = listener != null ? listener.transform.position : Vector3.zero;
-        AudioSource.PlayClipAtPoint(whooshSFX,audioPosition);
+        AudioSource.PlayClipAtPoint(whooshSfx, audioPosition);
 
-        Color startColor = waveText.color;
-        startColor.a = 1f;
-        waveText.color = startColor;
+        waveText.color = new Color(waveText.color.r, waveText.color.g, waveText.color.b, 1f);
 
         yield return new WaitForSeconds(displayDuration);
 
-        // Fade out
-        float elapsed = 0f;
-        while (elapsed < fadeDuration)
+        // DOTween fade out
+        waveText.DOFade(0f, fadeDuration).OnComplete(() =>
         {
-            elapsed += Time.deltaTime;
-            float t = elapsed / fadeDuration;
-
-            Color c = waveText.color;
-            c.a = Mathf.Lerp(1f, 0f, t);
-            waveText.color = c;
-
-            yield return null;
-        }
-
-        waveText.enabled = false;
+            waveText.enabled = false;
+        });
     }
 }

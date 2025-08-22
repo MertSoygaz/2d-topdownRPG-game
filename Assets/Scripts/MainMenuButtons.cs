@@ -4,18 +4,18 @@ using UnityEngine.SceneManagement;
 
 public class MainMenuButtons : MonoBehaviour
 {
-    public AudioSource source;
-    public AudioClip buttonSFX;
+    [SerializeField] private AudioSource source;
+    [SerializeField] private AudioClip buttonSfx;
      
     public void QuitGame()
     {
-        source.PlayOneShot(buttonSFX);
+        source.PlayOneShot(buttonSfx);
         Application.Quit();
     }
 
     public void PlayGame()
     {
-        source.PlayOneShot(buttonSFX);
+        source.PlayOneShot(buttonSfx);
         StartCoroutine(LoadAfterDelay(0.5f));
     }
 

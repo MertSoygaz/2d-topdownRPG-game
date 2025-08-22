@@ -6,23 +6,23 @@ using System.Collections.Generic;
 
 public class SkillManager : MonoBehaviour
 {
-    public TMP_Text levelInfoText1;
-    public TMP_Text levelInfoText2;
-    public TMP_Text levelInfoText3;
-    public Image skill4CooldownImage;
+    [SerializeField] private TMP_Text levelInfoText1;
+    [SerializeField] private TMP_Text levelInfoText2;
+    [SerializeField] private TMP_Text levelInfoText3;
+    [SerializeField] private Image skill4CooldownImage;
 
-    private Shooting shooting;
-    private bool isSkill4OnCooldown = false;
+    private Shooting _shooting;
+    private bool _isSkill4OnCooldown;
 
-    private Dictionary<string, SkillData> skills = new Dictionary<string, SkillData>();
+    private readonly Dictionary<string, SkillData> _skills = new Dictionary<string, SkillData>();
 
     private void Start()
     {
-        shooting = FindFirstObjectByType<Shooting>();
+        _shooting = FindFirstObjectByType<Shooting>();
 
-        skills["Skill1"] = new SkillData(0, 19, 20);     // Attack speed
-        skills["Skill2"] = new SkillData(0, 15, 25);     // Arrow speed
-        skills["Skill3"] = new SkillData(0, 3, 150);     // Arrow count
+        _skills["Skill1"] = new SkillData(0, 19, 20);     // Attack speed
+        _skills["Skill2"] = new SkillData(0, 15, 25);     // Arrow speed
+        _skills["Skill3"] = new SkillData(0, 3, 150);     // Arrow count
 
         UpdateSkillUI("Skill1", levelInfoText1);
         UpdateSkillUI("Skill2", levelInfoText2);
@@ -35,7 +35,7 @@ public class SkillManager : MonoBehaviour
     {
         TryUpgradeSkill("Skill1", levelInfoText1, () =>
         {
-            shooting.shootInterval = Mathf.Max(0.1f, shooting.shootInterval - 0.1f);
+            _shooting.shootInterval = Mathf.Max(0.1f, _shooting.shootInterval - 0.1f);
         });
     }
 
@@ -43,7 +43,7 @@ public class SkillManager : MonoBehaviour
     {
         TryUpgradeSkill("Skill2", levelInfoText2, () =>
         {
-            shooting.arrowSpeed += 1f;
+            _shooting.arrowSpeed += 1f;
         });
     }
 
@@ -51,13 +51,13 @@ public class SkillManager : MonoBehaviour
     {
         TryUpgradeSkill("Skill3", levelInfoText3, () =>
         {
-            shooting.arrowCount = skills["Skill3"].level + 1;
+            _shooting.arrowCount = _skills["Skill3"].Level + 1;
         });
     }
 
     public void UseSkill4()
     {
-        if (isSkill4OnCooldown)
+        if (_isSkill4OnCooldown)
         {
             Debug.Log("Skill4 is on cooldown.");
             return;
@@ -80,7 +80,6 @@ public class SkillManager : MonoBehaviour
 
     private IEnumerator Skill4Routine()
     {
-        // 1 saniye beklemeden sonra yok etme iþlemi baþlasýn
         yield return new WaitForSeconds(0.5f);
 
         GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
@@ -106,8 +105,8 @@ public class SkillManager : MonoBehaviour
             Destroy(e);
         }
 
-        // Cooldown baþlat (60 saniye)
-        isSkill4OnCooldown = true;
+        // Cooldown baï¿½lat (60 saniye)
+        _isSkill4OnCooldown = true;
         skill4CooldownImage.fillAmount = 0f;
 
         float cooldownTime = 60f;
@@ -121,25 +120,25 @@ public class SkillManager : MonoBehaviour
         }
 
         skill4CooldownImage.fillAmount = 1f;
-        isSkill4OnCooldown = false;
+        _isSkill4OnCooldown = false;
     }
     private void TryUpgradeSkill(string key, TMP_Text infoText, System.Action onUpgrade)
     {
-        SkillData skill = skills[key];
+        SkillData skill = _skills[key];
 
-        if (skill.level >= skill.maxLevel)
+        if (skill.Level >= skill.MaxLevel)
         {
             Debug.Log($"{key} is already at max level.");
             return;
         }
 
-        if (CoinManager.Instance.coinCount >= skill.cost)
+        if (CoinManager.Instance.coinCount >= skill.Cost)
         {
-            CoinManager.Instance.coinCount -= skill.cost;
+            CoinManager.Instance.coinCount -= skill.Cost;
             CoinManager.Instance.SendMessage("UpdateCoinUI");
 
-            skill.level++;
-            skills[key] = skill;
+            skill.Level++;
+            _skills[key] = skill;
 
             onUpgrade?.Invoke();
             UpdateSkillUI(key, infoText);
@@ -152,21 +151,21 @@ public class SkillManager : MonoBehaviour
 
     private void UpdateSkillUI(string key, TMP_Text text)
     {
-        SkillData skill = skills[key];
-        text.text = skill.level >= skill.maxLevel ? "MAX" : skill.level.ToString();
+        SkillData skill = _skills[key];
+        text.text = skill.Level >= skill.MaxLevel ? "MAX" : skill.Level.ToString();
     }
 
     private struct SkillData
     {
-        public int level;
-        public int maxLevel;
-        public int cost;
+        public int Level;
+        public readonly int MaxLevel;
+        public readonly int Cost;
 
         public SkillData(int level, int maxLevel, int cost)
         {
-            this.level = level;
-            this.maxLevel = maxLevel;
-            this.cost = cost;
+            this.Level = level;
+            this.MaxLevel = maxLevel;
+            this.Cost = cost;
         }
     }
 }

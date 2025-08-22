@@ -4,29 +4,32 @@ using UnityEngine;
 
 public class Shooting : MonoBehaviour
 {
-    public GameObject arrowPrefab;
-    public GameObject redHitEffect;
-    public GameObject blackHitEffect;
-    public AudioClip shootSFX;
+    [SerializeField] private GameObject arrowPrefab;
+    [SerializeField] private GameObject redHitEffect;
+    [SerializeField] private GameObject blackHitEffect;
+    [SerializeField] private AudioClip shootSfx;
 
+    private float _shootTimer;
+    [SerializeField] private BasicSpawner spawner;
+    [SerializeField] private RangeDetector rangeDetector;
+    private GameObject _currentTarget;
+    
+    [SerializeField] private Animator animator;
+    private static readonly int ShootTrigger = Animator.StringToHash("shoot");
+    private bool _isShooting;
+    
     public float shootInterval = 2f;
     public float arrowSpeed = 25f;
-
-    private float shootTimer;
-    [SerializeField] private RangeDetector rangeDetector;
-    private GameObject currentTarget;
-    [SerializeField] private Animator animator;
-    private bool isShooting = false;
     public int arrowCount = 1;
 
 
     private void Update()
     {
-        shootTimer += Time.deltaTime;
+        _shootTimer += Time.deltaTime;
 
-        if (!isShooting && shootTimer >= shootInterval)
+        if (!_isShooting && _shootTimer >= shootInterval)
         {
-            List<GameObject> targets = rangeDetector.GetNearestEnemies(transform.position, arrowCount);
+            var targets = rangeDetector.GetNearestEnemies(transform.position, arrowCount);
 
             if (targets.Count > 0)
             {
@@ -37,8 +40,8 @@ public class Shooting : MonoBehaviour
 
     IEnumerator ShootWithAnimation(List<GameObject> targets)
     {
-        isShooting = true;
-        animator.SetTrigger("shoot");
+        _isShooting = true;
+        animator.SetTrigger(ShootTrigger);
         yield return new WaitForSeconds(0.4f);    // Animation time
 
         foreach (var target in targets)
@@ -61,7 +64,7 @@ public class Shooting : MonoBehaviour
 
 
             GameObject arrow = Instantiate(arrowPrefab, transform.position, Quaternion.identity);
-            AudioSource.PlayClipAtPoint(shootSFX, transform.position);
+            AudioSource.PlayClipAtPoint(shootSfx, transform.position);
 
             var arrowScale = arrow.transform.localScale;
             arrowScale.x = directionToEnemy.x >= 0 ? Mathf.Abs(arrowScale.x) : -Mathf.Abs(arrowScale.x);
@@ -70,8 +73,8 @@ public class Shooting : MonoBehaviour
             StartCoroutine(MoveArrow(arrow, shootDirection, target));
         }
 
-        shootTimer = 0f;
-        isShooting = false;
+        _shootTimer = 0f;
+        _isShooting = false;
     }
 
     IEnumerator MoveArrow(GameObject arrow, Vector2 direction, GameObject target)
@@ -87,7 +90,7 @@ public class Shooting : MonoBehaviour
                 yield break;
             }
 
-            arrow.transform.Translate(direction * arrowSpeed * Time.deltaTime);
+            arrow.transform.Translate(direction * (arrowSpeed * Time.deltaTime));
 
             if (Vector2.Distance(arrow.transform.position, target.transform.position) < 0.5f)
             {
@@ -108,12 +111,10 @@ public class Shooting : MonoBehaviour
                         {
                             case "Enemy":
                                 effectToPlay = redHitEffect;
-                               
                                 break;
 
                             case "StrongEnemy":
                                 effectToPlay = blackHitEffect;
-                             
                                 break;
                         }
 
@@ -123,7 +124,8 @@ public class Shooting : MonoBehaviour
                             Destroy(effect, 1.5f);
                         }
                         
-                        Destroy(target);
+                        var isStrong = target.CompareTag("StrongEnemy");
+                        spawner.ReturnToPool(target, isStrong);
                     }
                 }
 

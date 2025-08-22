@@ -5,7 +5,7 @@ public class CoinManager : MonoBehaviour
     public static CoinManager Instance;     // Singleton
 
     public int coinCount = 0;
-    public TMP_Text coinText; 
+    [SerializeField] private TMP_Text coinText; 
 
     private void Awake()
     {
