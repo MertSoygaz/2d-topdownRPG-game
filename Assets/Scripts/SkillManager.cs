@@ -2,8 +2,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using System.Collections;
-using System.Collections.Generic;
-
+using Skill; 
 public class SkillManager : MonoBehaviour
 {
     [SerializeField] private TMP_Text levelInfoText1;
@@ -13,29 +12,31 @@ public class SkillManager : MonoBehaviour
     [SerializeField] private GameObject redHitEffect;
     [SerializeField] private GameObject blackHitEffect;
 
+    [Header("Skill Data (ScriptableObject)")]
+    [SerializeField] private SkillData skillDataAsset;
+
     private Shooting _shooting;
     private bool _isSkill4OnCooldown;
 
-    private readonly Dictionary<string, SkillData> _skills = new Dictionary<string, SkillData>();
+    private int _skill1Level;
+    private int _skill2Level;
+    private int _skill3Level;
 
     private void Start()
     {
         _shooting = FindFirstObjectByType<Shooting>();
 
-        _skills["Skill1"] = new SkillData(0, 19, 20);     // Attack speed
-        _skills["Skill2"] = new SkillData(0, 15, 25);     // Arrow speed
-        _skills["Skill3"] = new SkillData(0, 3, 150);     // Arrow count
-
-        UpdateSkillUI("Skill1", levelInfoText1);
-        UpdateSkillUI("Skill2", levelInfoText2);
-        UpdateSkillUI("Skill3", levelInfoText3);
+        UpdateSkillUI(SkillType.Skill1, levelInfoText1, _skill1Level);
+        UpdateSkillUI(SkillType.Skill2, levelInfoText2, _skill2Level);
+        UpdateSkillUI(SkillType.Skill3, levelInfoText3, _skill3Level);
 
         skill4CooldownImage.fillAmount = 1f;
     }
 
     public void UpgradeSkill1()
     {
-        TryUpgradeSkill("Skill1", levelInfoText1, () =>
+        var info = skillDataAsset.GetSkill(SkillType.Skill1);
+        TryUpgradeSkill(ref _skill1Level, info, levelInfoText1, () =>
         {
             _shooting.ShootInterval = Mathf.Max(0.1f, _shooting.ShootInterval - 0.1f);
         });
@@ -43,7 +44,8 @@ public class SkillManager : MonoBehaviour
 
     public void UpgradeSkill2()
     {
-        TryUpgradeSkill("Skill2", levelInfoText2, () =>
+        var info = skillDataAsset.GetSkill(SkillType.Skill2);
+        TryUpgradeSkill(ref _skill2Level, info, levelInfoText2, () =>
         {
             _shooting.ArrowSpeed += 1f;
         });
@@ -51,32 +53,35 @@ public class SkillManager : MonoBehaviour
 
     public void UpgradeSkill3()
     {
-        TryUpgradeSkill("Skill3", levelInfoText3, () =>
+        var info = skillDataAsset.GetSkill(SkillType.Skill3);
+        TryUpgradeSkill(ref _skill3Level, info, levelInfoText3, () =>
         {
-            _shooting.ArrowCount = _skills["Skill3"].Level + 1;
+            _shooting.ArrowCount = _skill3Level + 1;
         });
     }
 
     public void UseSkill4()
     {
+        var info = skillDataAsset.GetSkill(SkillType.Skill4);
+
         if (_isSkill4OnCooldown)
         {
             Debug.Log("Skill4 is on cooldown.");
             return;
         }
 
-        if (CoinManager.Instance.CoinCount < 350)
+        if (CoinManager.Instance.CoinCount < info.coinCost)
         {
             Debug.Log("Not enough coins for Skill4.");
             return;
         }
 
-        CoinManager.Instance.CoinCount -= 350;
+        CoinManager.Instance.CoinCount -= info.coinCost;
         CoinManager.Instance.UpdateCoinUI();
-        StartCoroutine(Skill4Routine());
+        StartCoroutine(Skill4Routine(info.cooldownTime));
     }
     
-    private IEnumerator Skill4Routine()
+    private IEnumerator Skill4Routine(float cooldownTime)
     {
         yield return new WaitForSeconds(0.5f);
 
@@ -106,9 +111,7 @@ public class SkillManager : MonoBehaviour
         _isSkill4OnCooldown = true;
         skill4CooldownImage.fillAmount = 0f;
 
-        const float cooldownTime = 60f;
         var elapsed = 0f;
-
         while (elapsed < cooldownTime)
         {
             elapsed += Time.deltaTime;
@@ -120,50 +123,32 @@ public class SkillManager : MonoBehaviour
         _isSkill4OnCooldown = false;
     }
 
-    private void TryUpgradeSkill(string key, TMP_Text infoText, System.Action onUpgrade)
+    private void TryUpgradeSkill(ref int currentLevel, SkillInfo info, TMP_Text uiText, System.Action onUpgrade)
     {
-        var skill = _skills[key];
-
-        if (skill.Level >= skill.MaxLevel)
+        if (currentLevel >= info.maxLevel)
         {
-            Debug.Log($"{key} is already at max level.");
+            Debug.Log($"{info.skillType} is already at max level.");
             return;
         }
 
-        if (CoinManager.Instance.CoinCount >= skill.Cost)
+        if (CoinManager.Instance.CoinCount >= info.coinCost)
         {
-            CoinManager.Instance.CoinCount -= skill.Cost;
+            CoinManager.Instance.CoinCount -= info.coinCost;
             CoinManager.Instance.UpdateCoinUI();
 
-            skill.Level++;
-            _skills[key] = skill;
-
+            currentLevel++;
             onUpgrade?.Invoke();
-            UpdateSkillUI(key, infoText);
+            UpdateSkillUI(info.skillType, uiText, currentLevel);
         }
         else
         {
-            Debug.Log($"Not enough coins to upgrade {key}.");
+            Debug.Log($"Not enough coins to upgrade {info.skillType}.");
         }
     }
 
-    private void UpdateSkillUI(string key, TMP_Text text)
+    private void UpdateSkillUI(SkillType type, TMP_Text text, int level)
     {
-        var skill = _skills[key];
-        text.text = skill.Level >= skill.MaxLevel ? "MAX" : skill.Level.ToString();
-    }
-
-    private struct SkillData
-    {
-        public int Level;
-        public readonly int MaxLevel;
-        public readonly int Cost;
-
-        public SkillData(int level, int maxLevel, int cost)
-        {
-            this.Level = level;
-            this.MaxLevel = maxLevel;
-            this.Cost = cost;
-        }
+        var info = skillDataAsset.GetSkill(type);
+        text.text = level >= info.maxLevel ? "MAX" : level.ToString();
     }
 }

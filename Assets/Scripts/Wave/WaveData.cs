@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Wave
 {
-    [CreateAssetMenu(menuName = "Create WaveData", fileName = "WaveData", order = 0)]
+    [CreateAssetMenu(fileName ="WaveData",menuName ="Project/Wave/Create WaveData")]
     public class WaveData : ScriptableObject
     {
         [SerializeField] private List<WavePair> waves;
