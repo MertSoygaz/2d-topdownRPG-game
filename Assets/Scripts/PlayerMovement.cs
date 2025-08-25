@@ -16,11 +16,13 @@ public class PlayerMovement : MonoBehaviour
         var horizontal = Input.GetAxisRaw("Horizontal");
         var vertical = Input.GetAxisRaw("Vertical");
 
+        var input = new Vector2(horizontal, vertical).normalized; // normalize et
+
         if (horizontal != 0)
         {
             LastMoveX = horizontal;
 
-            Vector3 scale = transform.localScale;
+            var scale = transform.localScale;
             scale.x = horizontal > 0 ? Mathf.Abs(scale.x) : -Mathf.Abs(scale.x);
             transform.localScale = scale;
         }
@@ -28,6 +30,6 @@ public class PlayerMovement : MonoBehaviour
         animator.SetFloat(Horizontal, Mathf.Abs(horizontal));
         animator.SetFloat(Vertical, Mathf.Abs(vertical));
 
-        rb.linearVelocity = new Vector2(horizontal, vertical) * speed;
+        rb.linearVelocity = input * speed; 
     }
 }
