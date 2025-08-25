@@ -61,7 +61,7 @@ AnimatorController:
   m_Name: Warrior_Run 1_0
   serializedVersion: 5
   m_AnimatorParameters:
-  - m_Name: strongEnemyAttack
+  - m_Name: strong Enemy Attack
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
@@ -138,7 +138,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: strongEnemyAttack
+    m_ConditionEvent: strong Enemy Attack
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 2341194822853543475}

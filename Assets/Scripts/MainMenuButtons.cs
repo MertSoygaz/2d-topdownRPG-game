@@ -19,7 +19,7 @@ public class MainMenuButtons : MonoBehaviour
         StartCoroutine(LoadAfterDelay(0.5f));
     }
 
-    IEnumerator LoadAfterDelay(float delay)
+    private static IEnumerator LoadAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
         SceneManager.LoadScene("GameplayScene");

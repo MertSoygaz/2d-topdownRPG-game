@@ -4,9 +4,10 @@ public class CoinManager : MonoBehaviour
 {
     public static CoinManager Instance;     // Singleton
 
-    public int coinCount = 0;
+    private int _coinCount;
+    public int  CoinCount {get => _coinCount; set => _coinCount = value; }
+    
     [SerializeField] private TMP_Text coinText; 
-
     private void Awake()
     {
         if (Instance == null)
@@ -22,15 +23,15 @@ public class CoinManager : MonoBehaviour
 
     public void AddCoins(int amount)
     {
-        coinCount += amount;
+        _coinCount += amount;
         UpdateCoinUI();
     }
 
-    private void UpdateCoinUI()
+    public void UpdateCoinUI()
     {
-        if (coinText != null)
+        if (coinText is not null)
         {
-            coinText.text = coinCount.ToString();
+            coinText.text = _coinCount.ToString();
         }
     }
 }

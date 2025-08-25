@@ -3,53 +3,33 @@ using TMPro;
 
 public class Timer : MonoBehaviour
 {
-    public TMP_Text timerText;
-    private const float TotalTime = 601f;
+    [SerializeField] private TMP_Text timerText;
+    [SerializeField] private float totalTime = 601f; 
+
     private float _elapsedTime;
-    private bool _timerRunning;
     private bool _isPaused;
 
-    void Start()
+    private void Start()
     {
-        StartTimer();
-    }
-
-    void Update()
-    {
-        if (_timerRunning && !_isPaused)
-        {
-            _elapsedTime += Time.deltaTime;
-            UpdateTimerUI();
-            if (_elapsedTime >= TotalTime)
-            {
-                _timerRunning = false;
-            }
-        }
-    }
-
-    void StartTimer()
-    {
-        _timerRunning = true;
+        _elapsedTime = 0f;
+        _isPaused = false;
         UpdateTimerUI();
     }
 
-    void UpdateTimerUI()
+    private void Update()
     {
-        var timeLeft = TotalTime - _elapsedTime;
-        var minutes = Mathf.FloorToInt(timeLeft / 60);
-        var seconds = Mathf.FloorToInt(timeLeft % 60);
-        timerText.text = $"{minutes:00}:{seconds:00}";                        // string.Format("{0:00}:{1:00}", minutes, seconds);
+        if (_isPaused || _elapsedTime >= totalTime) return;
 
-
+        _elapsedTime += Time.deltaTime;
+        UpdateTimerUI();
     }
 
-    public void PauseTimer()
+    private void UpdateTimerUI()
     {
-        _isPaused = true;
-    }
+        var timeLeft = Mathf.Max(0f, totalTime - _elapsedTime);
+        var minutes = Mathf.FloorToInt(timeLeft / 60f);
+        var seconds = Mathf.FloorToInt(timeLeft % 60f);
 
-    public void ResumeTimer()
-    {
-        _isPaused = false;
+        timerText.text = $"{minutes:00}:{seconds:00}";
     }
 }

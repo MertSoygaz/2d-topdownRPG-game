@@ -2,24 +2,27 @@ using UnityEngine;
 
 public class EnemyFollow : MonoBehaviour
 {
-    public float speed = 1.25f;
+    [SerializeField] private float speed = 1.25f;
+    public float Speed { get => speed; set => speed = value;}
+    
     private Transform _player;
 
-    void Start()
+    private void Start()
     {
         _player = GameObject.FindGameObjectWithTag("Player").transform;
-    }
+    }      
 
-    void Update()
+    private void Update()
     {
-        if (_player == null) return;
-
+        if (_player is null) return;
         Vector2 direction = (_player.position - transform.position).normalized;
         transform.position += (Vector3)(direction * (speed * Time.deltaTime));
 
-        if (direction.x < 0)
-            transform.localScale = new Vector3(-1, 1, 1);
-        else if (direction.x > 0)
-            transform.localScale = new Vector3(1, 1, 1);
+        transform.localScale = direction.x switch
+        {
+            < 0 => new Vector3(-1, 1, 1),
+            > 0 => new Vector3(1, 1, 1),
+            _ => transform.localScale
+        };
     }
 }

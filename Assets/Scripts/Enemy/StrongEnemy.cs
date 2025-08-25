@@ -1,8 +1,10 @@
-using UnityEngine;
-
-public class StrongEnemy : Enemy
+namespace Enemy
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-
-
+    public class StrongEnemy : Enemy
+    {
+        public override void KillEnemy()
+        {
+            base.KillEnemy();
+        }
+    }
 }

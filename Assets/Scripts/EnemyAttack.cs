@@ -3,33 +3,31 @@ using UnityEngine;
 public class EnemyAttack : MonoBehaviour
 {
     [SerializeField] private float attackRange = 1.6f;
-    private GameObject _player;
-    private Animator _animator;
     [SerializeField] private AudioClip swordStabSfx;
 
+    private GameObject _player;
+    private Animator _animator;
+    private static readonly int Attack = Animator.StringToHash("enemy Attack");
+    private bool _hasHitThisAttack;
 
-    private bool _hasHitThisAttack = false;
-
-    void Start()
+    private void Start()
     {
         _player = GameObject.FindGameObjectWithTag("Player");
         _animator = GetComponent<Animator>();
     }
 
-    void Update()
+    private void Update()
     {
-        if (_player == null) return;
+        if (_player is null) return;
 
-        float distanceToPlayer = Vector2.Distance(transform.position, _player.transform.position);
+        var distanceToPlayer = Vector2.Distance(transform.position, _player.transform.position);
 
-        if (distanceToPlayer <= attackRange)
-        {
-            if (!_animator.GetCurrentAnimatorStateInfo(0).IsName("EnemyAttacking"))
-            {
-                _animator.SetTrigger("enemyAttack");
-                _hasHitThisAttack = false;  
-            }
-        }
+        if (distanceToPlayer > attackRange) return;
+        if (_animator.GetCurrentAnimatorStateInfo(0).IsName("EnemyAttacking")) return;
+
+        _animator.SetTrigger(Attack);
+        _hasHitThisAttack = false;
+
     }
 
     private void OnCollisionStay2D(Collision2D collision)
@@ -43,11 +41,11 @@ public class EnemyAttack : MonoBehaviour
                 Debug.Log("Hit");
                 _hasHitThisAttack = true;
 
-                AudioListener listener = FindFirstObjectByType<AudioListener>();
-                Vector3 audioPosition = listener != null ? listener.transform.position : Vector3.zero;
+                var listener = FindFirstObjectByType<AudioListener>();
+                var audioPosition = listener != null ? listener.transform.position : Vector3.zero;
                 AudioSource.PlayClipAtPoint(swordStabSfx, audioPosition);
 
-                float damage = 0.05f;
+                const float damage = 0.05f;
                 PlayerHealthBarRect.Instance.TakeDamage(damage);
             }
         }

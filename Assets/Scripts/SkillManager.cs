@@ -10,6 +10,8 @@ public class SkillManager : MonoBehaviour
     [SerializeField] private TMP_Text levelInfoText2;
     [SerializeField] private TMP_Text levelInfoText3;
     [SerializeField] private Image skill4CooldownImage;
+    [SerializeField] private GameObject redHitEffect;
+    [SerializeField] private GameObject blackHitEffect;
 
     private Shooting _shooting;
     private bool _isSkill4OnCooldown;
@@ -35,7 +37,7 @@ public class SkillManager : MonoBehaviour
     {
         TryUpgradeSkill("Skill1", levelInfoText1, () =>
         {
-            _shooting.shootInterval = Mathf.Max(0.1f, _shooting.shootInterval - 0.1f);
+            _shooting.ShootInterval = Mathf.Max(0.1f, _shooting.ShootInterval - 0.1f);
         });
     }
 
@@ -43,7 +45,7 @@ public class SkillManager : MonoBehaviour
     {
         TryUpgradeSkill("Skill2", levelInfoText2, () =>
         {
-            _shooting.arrowSpeed += 1f;
+            _shooting.ArrowSpeed += 1f;
         });
     }
 
@@ -51,7 +53,7 @@ public class SkillManager : MonoBehaviour
     {
         TryUpgradeSkill("Skill3", levelInfoText3, () =>
         {
-            _shooting.arrowCount = _skills["Skill3"].Level + 1;
+            _shooting.ArrowCount = _skills["Skill3"].Level + 1;
         });
     }
 
@@ -63,54 +65,49 @@ public class SkillManager : MonoBehaviour
             return;
         }
 
-        if (CoinManager.Instance.coinCount < 350)
+        if (CoinManager.Instance.CoinCount < 350)
         {
             Debug.Log("Not enough coins for Skill4.");
             return;
         }
 
-        CoinManager.Instance.coinCount -= 350;
-        CoinManager.Instance.SendMessage("UpdateCoinUI");
-
+        CoinManager.Instance.CoinCount -= 350;
+        CoinManager.Instance.UpdateCoinUI();
         StartCoroutine(Skill4Routine());
     }
-
-    public GameObject redHitEffect;
-    public GameObject blackHitEffect;
-
+    
     private IEnumerator Skill4Routine()
     {
         yield return new WaitForSeconds(0.5f);
 
-        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
-        GameObject[] strongEnemies = GameObject.FindGameObjectsWithTag("StrongEnemy");
+        var enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        var strongEnemies = GameObject.FindGameObjectsWithTag("StrongEnemy");
 
-        foreach (GameObject e in enemies)
+        foreach (var e in enemies)
         {
-            if (redHitEffect != null)
+            if (redHitEffect is not null)
             {
-                GameObject effect = Instantiate(redHitEffect, e.transform.position, Quaternion.identity);
+                var effect = Instantiate(redHitEffect, e.transform.position, Quaternion.identity);
                 Destroy(effect, 1.5f);
             }
             Destroy(e);
         }
 
-        foreach (GameObject e in strongEnemies)
+        foreach (var e in strongEnemies)
         {
-            if (blackHitEffect != null)
+            if (blackHitEffect is not null)
             {
-                GameObject effect = Instantiate(blackHitEffect, e.transform.position, Quaternion.identity);
+                var effect = Instantiate(blackHitEffect, e.transform.position, Quaternion.identity);
                 Destroy(effect, 1.5f);
             }
             Destroy(e);
         }
 
-        // Cooldown ba�lat (60 saniye)
         _isSkill4OnCooldown = true;
         skill4CooldownImage.fillAmount = 0f;
 
-        float cooldownTime = 60f;
-        float elapsed = 0f;
+        const float cooldownTime = 60f;
+        var elapsed = 0f;
 
         while (elapsed < cooldownTime)
         {
@@ -122,9 +119,10 @@ public class SkillManager : MonoBehaviour
         skill4CooldownImage.fillAmount = 1f;
         _isSkill4OnCooldown = false;
     }
+
     private void TryUpgradeSkill(string key, TMP_Text infoText, System.Action onUpgrade)
     {
-        SkillData skill = _skills[key];
+        var skill = _skills[key];
 
         if (skill.Level >= skill.MaxLevel)
         {
@@ -132,10 +130,10 @@ public class SkillManager : MonoBehaviour
             return;
         }
 
-        if (CoinManager.Instance.coinCount >= skill.Cost)
+        if (CoinManager.Instance.CoinCount >= skill.Cost)
         {
-            CoinManager.Instance.coinCount -= skill.Cost;
-            CoinManager.Instance.SendMessage("UpdateCoinUI");
+            CoinManager.Instance.CoinCount -= skill.Cost;
+            CoinManager.Instance.UpdateCoinUI();
 
             skill.Level++;
             _skills[key] = skill;
@@ -151,7 +149,7 @@ public class SkillManager : MonoBehaviour
 
     private void UpdateSkillUI(string key, TMP_Text text)
     {
-        SkillData skill = _skills[key];
+        var skill = _skills[key];
         text.text = skill.Level >= skill.MaxLevel ? "MAX" : skill.Level.ToString();
     }
 

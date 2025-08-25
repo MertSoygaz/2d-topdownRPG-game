@@ -3,15 +3,18 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private float speed = 7f;
-    public Rigidbody2D rb;
-    public Animator animator;
+    [SerializeField] private Rigidbody2D rb;
+    [SerializeField] private Animator animator;
+
+    private static readonly int Horizontal = Animator.StringToHash("horizontal");
+    private static readonly int Vertical = Animator.StringToHash("vertical");
 
     public static float LastMoveX { get; private set; }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
-        float horizontal = Input.GetAxisRaw("Horizontal");
-        float vertical = Input.GetAxisRaw("Vertical");
+        var horizontal = Input.GetAxisRaw("Horizontal");
+        var vertical = Input.GetAxisRaw("Vertical");
 
         if (horizontal != 0)
         {
@@ -22,8 +25,8 @@ public class PlayerMovement : MonoBehaviour
             transform.localScale = scale;
         }
 
-        animator.SetFloat("horizontal", Mathf.Abs(horizontal));
-        animator.SetFloat("vertical", Mathf.Abs(vertical));
+        animator.SetFloat(Horizontal, Mathf.Abs(horizontal));
+        animator.SetFloat(Vertical, Mathf.Abs(vertical));
 
         rb.linearVelocity = new Vector2(horizontal, vertical) * speed;
     }

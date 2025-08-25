@@ -1483,7 +1483,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   source: {fileID: 605680478}
-  buttonSFX: {fileID: 8300000, guid: e58eeaeaca421574eb638ba9acd30ff7, type: 3}
+  buttonSfx: {fileID: 8300000, guid: e58eeaeaca421574eb638ba9acd30ff7, type: 3}
 --- !u!1 &1831840295
 GameObject:
   m_ObjectHideFlags: 0

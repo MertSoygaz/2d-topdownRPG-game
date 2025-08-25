@@ -7,22 +7,27 @@ public class Shooting : MonoBehaviour
     [SerializeField] private GameObject arrowPrefab;
     [SerializeField] private GameObject redHitEffect;
     [SerializeField] private GameObject blackHitEffect;
+    
     [SerializeField] private AudioClip shootSfx;
-
-    private float _shootTimer;
+    
     [SerializeField] private BasicSpawner spawner;
     [SerializeField] private RangeDetector rangeDetector;
-    private GameObject _currentTarget;
-    
     [SerializeField] private Animator animator;
+
     private static readonly int ShootTrigger = Animator.StringToHash("shoot");
     private bool _isShooting;
+    private float _shootTimer;
+    private GameObject _currentTarget;
+
     
-    public float shootInterval = 2f;
-    public float arrowSpeed = 25f;
-    public int arrowCount = 1;
-
-
+    [SerializeField] private float shootInterval = 2f;
+    [SerializeField] private float arrowSpeed = 25f;
+    [SerializeField] private int arrowCount = 1;
+    
+    public float  ShootInterval {get => shootInterval; set => shootInterval = value; }                      // properties 
+    public float  ArrowSpeed {get => arrowSpeed; set => arrowSpeed = value; }
+    public int  ArrowCount {get => arrowCount; set => arrowCount = value; }
+    
     private void Update()
     {
         _shootTimer += Time.deltaTime;
@@ -38,23 +43,24 @@ public class Shooting : MonoBehaviour
         }
     }
 
-    IEnumerator ShootWithAnimation(List<GameObject> targets)
+ 
+
+    private IEnumerator ShootWithAnimation(List<GameObject> targets)
     {
         _isShooting = true;
         animator.SetTrigger(ShootTrigger);
-        yield return new WaitForSeconds(0.4f);    // Animation time
+        yield return new WaitForSeconds(0.4f);                                                             // Animation time
 
         foreach (var target in targets)
         {
-            if (target == null) continue;
+            if (target is null) continue;
 
             Vector2 directionToEnemy = target.transform.position - transform.position;
-            Vector2 shootDirection = directionToEnemy.normalized;
-
-            float moveDir = PlayerMovement.LastMoveX;
-            float shootDirX = directionToEnemy.x;
-
-            bool shouldFlip = (moveDir > 0 && shootDirX < 0) || (moveDir < 0 && shootDirX > 0);
+            var shootDirection = directionToEnemy.normalized;
+            var moveDir = PlayerMovement.LastMoveX;
+            var shootDirX = directionToEnemy.x;
+            
+            var shouldFlip = (moveDir > 0 && shootDirX < 0) || (moveDir < 0 && shootDirX > 0);
             if (shouldFlip)
             {
                 var scale = transform.localScale;
@@ -63,7 +69,7 @@ public class Shooting : MonoBehaviour
             }
 
 
-            GameObject arrow = Instantiate(arrowPrefab, transform.position, Quaternion.identity);
+            var arrow = Instantiate(arrowPrefab, transform.position, Quaternion.identity);
             AudioSource.PlayClipAtPoint(shootSfx, transform.position);
 
             var arrowScale = arrow.transform.localScale;
@@ -77,14 +83,14 @@ public class Shooting : MonoBehaviour
         _isShooting = false;
     }
 
-    IEnumerator MoveArrow(GameObject arrow, Vector2 direction, GameObject target)
+    private IEnumerator MoveArrow(GameObject arrow, Vector2 direction, GameObject target)
     {
-        float timer = 0f;
-        float lifeTime = 5f;
+        var timer = 0f;
+        const float lifeTime = 5f;
 
-        while (arrow != null && timer < lifeTime)
+        while (arrow is not null && timer < lifeTime)
         {
-            if (target == null)
+            if (target is null)
             {
                 Destroy(arrow);
                 yield break;
@@ -94,35 +100,29 @@ public class Shooting : MonoBehaviour
 
             if (Vector2.Distance(arrow.transform.position, target.transform.position) < 0.5f)
             {
-                EnemyHealth enemyHealth = target.GetComponent<EnemyHealth>();
-
-                if (enemyHealth != null)
+                var enemyHealth = target.GetComponent<EnemyHealth>();
+                var enemy = target.GetComponent<Enemy.Enemy>();
+                if (enemyHealth is not null)
                 {
                     enemyHealth.TakeDamage(1);
 
-                    if (enemyHealth.health <= 0)
+                    if (enemyHealth.Health <= 0)
                     {
-                        GameObject effectToPlay = null;
-
-                        var enemy = target.GetComponent<Enemy>();
                         enemy.KillEnemy();
-                   
-                        switch (target.tag)
-                        {
-                            case "Enemy":
-                                effectToPlay = redHitEffect;
-                                break;
 
-                            case "StrongEnemy":
-                                effectToPlay = blackHitEffect;
-                                break;
-                        }
-
-                        if (effectToPlay != null)
+                        var effectToPlay = target.tag switch
                         {
-                            GameObject effect = Instantiate(effectToPlay, target.transform.position, Quaternion.identity);
+                            "Enemy" => redHitEffect,
+                            "StrongEnemy" => blackHitEffect,
+                            _ => null
+                        };
+
+                        if (effectToPlay is not null)
+                        {
+                            var effect = Instantiate(effectToPlay, target.transform.position, Quaternion.identity);
                             Destroy(effect, 1.5f);
                         }
+
                         
                         var isStrong = target.CompareTag("StrongEnemy");
                         spawner.ReturnToPool(target, isStrong);
@@ -137,7 +137,7 @@ public class Shooting : MonoBehaviour
             yield return null;
         }
 
-        if (arrow != null)
+        if (arrow is not null)
             Destroy(arrow);
     }
 }

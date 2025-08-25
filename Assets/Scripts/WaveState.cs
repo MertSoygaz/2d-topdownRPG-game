@@ -32,8 +32,8 @@ public class WaveState : MonoBehaviour
         waveText.text = "Wave " + waveNumber;
         waveText.enabled = true;
 
-        AudioListener listener = FindFirstObjectByType<AudioListener>();
-        Vector3 audioPosition = listener != null ? listener.transform.position : Vector3.zero;
+        var listener = FindFirstObjectByType<AudioListener>();
+        var audioPosition = listener is not null ? listener.transform.position : Vector3.zero;
         AudioSource.PlayClipAtPoint(whooshSfx, audioPosition);
 
         waveText.color = new Color(waveText.color.r, waveText.color.g, waveText.color.b, 1f);

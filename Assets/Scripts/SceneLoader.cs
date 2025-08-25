@@ -3,7 +3,7 @@ using UnityEngine.SceneManagement;
 
 public class SceneLoader : MonoBehaviour
 {
-    void Start()
+    private void Start()
     {
         // Load HUD Scene as Additive
         SceneManager.LoadScene("HUD", LoadSceneMode.Additive);

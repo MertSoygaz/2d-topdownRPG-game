@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1bbc94d9abb787448e4cd93a1d4234f, type: 3}
+  m_Name: WaveData
+  m_EditorClassIdentifier: 
+  waves:
+  - enemyCount: 12
+    strongEnemyCount: 4
+  - enemyCount: 15
+    strongEnemyCount: 5
+  - enemyCount: 17
+    strongEnemyCount: 6
+  - enemyCount: 20
+    strongEnemyCount: 8
+  - enemyCount: 25
+    strongEnemyCount: 10
+  - enemyCount: 35
+    strongEnemyCount: 18
+  - enemyCount: 45
+    strongEnemyCount: 25
+  - enemyCount: 60
+    strongEnemyCount: 30
+  - enemyCount: 75
+    strongEnemyCount: 40
+  - enemyCount: 90
+    strongEnemyCount: 50

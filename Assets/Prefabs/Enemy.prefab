@@ -219,6 +219,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2913397fa64dc6849a9cbf35a8d95062, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spriteRenderer: {fileID: 2300736280754887871}
+  enemyFollow: {fileID: 5331862924173438795}
   health: 1
 --- !u!114 &7901293903243372650
 MonoBehaviour:

@@ -5,7 +5,7 @@ public class PlayerHealthBarRect : MonoBehaviour
 {
     public static PlayerHealthBarRect Instance;
 
-    public Image fillImage; 
+    [SerializeField] private Image fillImage; 
 
     private void Awake()
     {

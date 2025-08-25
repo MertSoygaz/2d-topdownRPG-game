@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using Wave;
 
 public class BasicSpawner : MonoBehaviour
 {
@@ -12,22 +13,14 @@ public class BasicSpawner : MonoBehaviour
     [SerializeField] private int enemyPoolSize = 70;
     [SerializeField] private int strongEnemyPoolSize = 40;
     [SerializeField] private float spawnDistance = 30f;
-
+    
+    [SerializeField] private WaveData waveData;
+    
     private readonly Queue<GameObject> _enemyPool = new();
     private readonly Queue<GameObject> _strongEnemyPool = new();
 
-    private readonly (int enemyCount, int strongEnemyCount)[] _waveData = {
-        (12, 4),
-        (15, 5),
-        (17, 6),
-        (20, 8),
-        (25, 10),
-        (30, 12),
-        (40, 15), 
-        (45, 20),
-        (55, 25),
-        (60, 30)
-    };
+    
+    
 
     private int _currentWave;
     private readonly List<GameObject> _aliveEnemies = new();
@@ -43,7 +36,7 @@ public class BasicSpawner : MonoBehaviour
         for (var i = 0; i < enemyPoolSize; i++)
         {
             var obj = Instantiate(enemyPrefab);
-            obj.name = $"enemy_{i}";
+            obj.name = $"Enemy_{i}";
             obj.SetActive(false);
             _enemyPool.Enqueue(obj);                                        // Adds 70 (enemyPoolSize) enemy to pool
         }
@@ -51,7 +44,7 @@ public class BasicSpawner : MonoBehaviour
         for (var i = 0; i < strongEnemyPoolSize; i++)
         {
             var obj = Instantiate(strongEnemyPrefab);
-            obj.name = $"strongenemy_{i}";
+            obj.name = $"Strong Enemy_{i}";
             obj.SetActive(false);
             _strongEnemyPool.Enqueue(obj);                                 // Adds 40 (strongEnemyPoolSize) strong enemy to pool
         }
@@ -70,7 +63,7 @@ public class BasicSpawner : MonoBehaviour
     {
         var cam = Camera.main;
 
-        for (var i = 0; i < _waveData.Length; i++)
+        for (var i = 0; i < waveData.Waves.Count; i++)
         {
             _currentWave = i + 1;
             Debug.Log("Wave " + _currentWave + " started");
@@ -78,8 +71,8 @@ public class BasicSpawner : MonoBehaviour
             
             if(cam==null) yield break;
             var center = cam.transform.position;
-            var enemyCount = _waveData[i].enemyCount;
-            var strongEnemyCount = _waveData[i].strongEnemyCount;
+            var enemyCount = waveData.Waves[i].enemyCount;
+            var strongEnemyCount = waveData.Waves[i].strongEnemyCount;
 
             _aliveEnemies.Clear();
 
@@ -102,7 +95,7 @@ public class BasicSpawner : MonoBehaviour
             }
 
             var timer = 0f;
-            while (timer < 30f)
+            while (timer < 60f)
             {
                 _aliveEnemies.RemoveAll(e => e == null || !e.activeInHierarchy);
 

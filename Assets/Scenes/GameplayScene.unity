@@ -436,7 +436,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 7.58
+  orthographic size: 7.09
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -5867,9 +5867,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyPrefab: {fileID: 6038028943035029918, guid: 96423bc1fe903cf43babcb8fcf00a5bd, type: 3}
   strongEnemyPrefab: {fileID: 5008120065480511195, guid: 37c004453480e174baf63503f237e5d6, type: 3}
-  enemyPoolSize: 70
-  strongEnemyPoolSize: 40
+  enemyPoolSize: 100
+  strongEnemyPoolSize: 60
   spawnDistance: 30
+  waveData: {fileID: 11400000, guid: 32938892b01c3bd4682acbdf10b3e0d1, type: 2}
 --- !u!4 &1673671676
 Transform:
   m_ObjectHideFlags: 0

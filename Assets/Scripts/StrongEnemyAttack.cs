@@ -2,30 +2,31 @@ using UnityEngine;
 
 public class StrongEnemyAttack : MonoBehaviour
 {
-    public float attackRange = 1.75f;
+    [SerializeField] private float attackRange = 1.75f;
+    [SerializeField] private AudioClip swordStabSfx;
+    
     private GameObject _player;
     private Animator _animator;
-    [SerializeField] private AudioClip swordStabSfx;
-
+    private static readonly int Attack = Animator.StringToHash("strong Enemy Attack");
     private bool _hasHitThisAttack;
 
-    void Start()
+    private void Start()
     {
         _player = GameObject.FindGameObjectWithTag("Player");
         _animator = GetComponent<Animator>();
     }
 
-    void Update()
+    private void Update()
     {
-        if (_player == null) return;
+        if (_player is null) return;
 
-        float distanceToPlayer = Vector2.Distance(transform.position, _player.transform.position);
+        var distanceToPlayer = Vector2.Distance(transform.position, _player.transform.position);
 
         if (distanceToPlayer <= attackRange)
         {
             if (!_animator.GetCurrentAnimatorStateInfo(0).IsName("StrongEnemyAttacking"))
             {
-                _animator.SetTrigger("strongEnemyAttack");
+                _animator.SetTrigger(Attack);
                 _hasHitThisAttack = false; 
             }
         }
@@ -42,12 +43,12 @@ public class StrongEnemyAttack : MonoBehaviour
                 Debug.Log("Hit");
                 _hasHitThisAttack = true;
 
-                AudioListener listener = FindFirstObjectByType<AudioListener>();
-                Vector3 audioPosition = listener != null ? listener.transform.position : Vector3.zero;
+                var listener = FindFirstObjectByType<AudioListener>();
+                var audioPosition = listener != null ? listener.transform.position : Vector3.zero;
                 AudioSource.PlayClipAtPoint(swordStabSfx, audioPosition);
 
 
-                float damage = 0.1f;
+                const float damage = 0.1f;
                 PlayerHealthBarRect.Instance.TakeDamage(damage);
             }
         }

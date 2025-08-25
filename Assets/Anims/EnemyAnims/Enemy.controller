@@ -9,7 +9,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: enemyAttack
+    m_ConditionEvent: enemy Attack
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 3692199321297651454}
@@ -84,7 +84,7 @@ AnimatorController:
   m_Name: Enemy
   serializedVersion: 5
   m_AnimatorParameters:
-  - m_Name: enemyAttack
+  - m_Name: enemy Attack
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
