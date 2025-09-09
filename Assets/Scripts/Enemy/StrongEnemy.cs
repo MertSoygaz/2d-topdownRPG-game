@@ -2,7 +2,7 @@ namespace Enemy
 {
     public class StrongEnemy : Enemy
     {
-        public override void KillEnemy()
+        public  override void KillEnemy()
         {
             base.KillEnemy();
         }

@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [SerializeField] private float speed = 7f;
+    [SerializeField] private float speed = 5f;
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private Animator animator;
 
@@ -15,7 +15,6 @@ public class PlayerMovement : MonoBehaviour
     {
         var horizontal = Input.GetAxisRaw("Horizontal");
         var vertical = Input.GetAxisRaw("Vertical");
-
         var input = new Vector2(horizontal, vertical).normalized; // normalize et
 
         if (horizontal != 0)

@@ -6,6 +6,7 @@ namespace Enemy
     {
         [SerializeField] protected GameObject effect;
         [SerializeField] protected EnemyData enemyData;
+        
 
         public GameObject Effect => effect;
     

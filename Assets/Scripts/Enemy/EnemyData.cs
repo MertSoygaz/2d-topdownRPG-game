@@ -6,7 +6,6 @@ namespace Enemy
     public class EnemyData : ScriptableObject
     {
         [SerializeField] private int rewardCoin;
-
         public int RewardCoin => rewardCoin;
     }
 }

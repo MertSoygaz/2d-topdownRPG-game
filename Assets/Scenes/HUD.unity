@@ -6905,7 +6905,7 @@ MonoBehaviour:
   skill4CooldownImage: {fileID: 1174494437}
   redHitEffect: {fileID: 1529007030392519869, guid: 62e5a7e0c7eec1a449bc661240048e51, type: 3}
   blackHitEffect: {fileID: 1529007030392519869, guid: 4f5d6cbf29baef040a0a873cd545a581, type: 3}
-  skillDataAsset: {fileID: 11400000, guid: c1856dbe965e824418390e41861fe309, type: 2}
+  skillData: {fileID: 11400000, guid: c1856dbe965e824418390e41861fe309, type: 2}
 --- !u!1 &1734391823
 GameObject:
   m_ObjectHideFlags: 0

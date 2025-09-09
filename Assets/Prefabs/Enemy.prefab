@@ -207,6 +207,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attackRange: 1.6
   swordStabSfx: {fileID: 8300000, guid: f31c04aebff806145b4f39add0932679, type: 3}
+  player: {fileID: 241582449587604810, guid: 9289275662948a14fa57e42dd4992d6b, type: 3}
 --- !u!114 &454151067516543396
 MonoBehaviour:
   m_ObjectHideFlags: 0

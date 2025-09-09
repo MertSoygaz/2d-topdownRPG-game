@@ -9,24 +9,26 @@ public class Shooting : MonoBehaviour
     [SerializeField] private GameObject blackHitEffect;
     
     [SerializeField] private AudioClip shootSfx;
+    [SerializeField] private Animator animator;
+
     
     [SerializeField] private BasicSpawner spawner;
     [SerializeField] private RangeDetector rangeDetector;
-    [SerializeField] private Animator animator;
 
     private static readonly int ShootTrigger = Animator.StringToHash("shoot");
     private bool _isShooting;
     private float _shootTimer;
-    private GameObject _currentTarget;
 
-    
+
     [SerializeField] private float shootInterval = 2f;
     [SerializeField] private float arrowSpeed = 25f;
     [SerializeField] private int arrowCount = 1;
     
-    public float  ShootInterval {get => shootInterval; set => shootInterval = value; }                      // properties 
+    // properties 
+    public float  ShootInterval {get => shootInterval; set => shootInterval = value; }                
     public float  ArrowSpeed {get => arrowSpeed; set => arrowSpeed = value; }
     public int  ArrowCount {get => arrowCount; set => arrowCount = value; }
+    
     
     private void Update()
     {
@@ -41,7 +43,8 @@ public class Shooting : MonoBehaviour
                 StartCoroutine(ShootWithAnimation(targets));
             }
         }
-    }
+    } 
+
 
  
 
@@ -49,25 +52,21 @@ public class Shooting : MonoBehaviour
     {
         _isShooting = true;
         animator.SetTrigger(ShootTrigger);
-        yield return new WaitForSeconds(0.4f);                                                             // Animation time
 
-        foreach (var target in targets)
+        yield return new WaitForSeconds(0.4f); 
+        var shots = Mathf.Min(arrowCount, targets.Count);                                 //  for unnecessary Instantiate
+
+        for (var i = 0; i < shots; i++)
         {
+            var target = targets[i];
             if (target is null) continue;
 
             Vector2 directionToEnemy = target.transform.position - transform.position;
             var shootDirection = directionToEnemy.normalized;
-            var moveDir = PlayerMovement.LastMoveX;
-            var shootDirX = directionToEnemy.x;
             
-            var shouldFlip = (moveDir > 0 && shootDirX < 0) || (moveDir < 0 && shootDirX > 0);
-            if (shouldFlip)
-            {
-                var scale = transform.localScale;
-                scale.x *= -1;
-                transform.localScale = scale;
-            }
-
+            var scale = transform.localScale;
+            scale.x = directionToEnemy.x >= 0 ? Mathf.Abs(scale.x) : -Mathf.Abs(scale.x);
+            transform.localScale = scale;
 
             var arrow = Instantiate(arrowPrefab, transform.position, Quaternion.identity);
             AudioSource.PlayClipAtPoint(shootSfx, transform.position);
@@ -141,3 +140,5 @@ public class Shooting : MonoBehaviour
             Destroy(arrow);
     }
 }
+
+

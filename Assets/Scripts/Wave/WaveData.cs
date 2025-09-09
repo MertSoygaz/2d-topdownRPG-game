@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,7 +12,7 @@ namespace Wave
         public List<WavePair> Waves => waves;
     }
 
-    [System.Serializable]
+    [Serializable]
     public struct WavePair
     {
         public int enemyCount;

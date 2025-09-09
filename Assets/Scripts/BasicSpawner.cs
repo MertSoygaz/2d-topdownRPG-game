@@ -10,8 +10,8 @@ public class BasicSpawner : MonoBehaviour
     [SerializeField] private GameObject strongEnemyPrefab;
 
     [Header("Pool Settings")] 
-    [SerializeField] private int enemyPoolSize = 70;
-    [SerializeField] private int strongEnemyPoolSize = 40;
+    [SerializeField] private int enemyPoolSize = 100;
+    [SerializeField] private int strongEnemyPoolSize = 60;
     [SerializeField] private float spawnDistance = 30f;
     
     [SerializeField] private WaveData waveData;
@@ -19,9 +19,9 @@ public class BasicSpawner : MonoBehaviour
     private readonly Queue<GameObject> _enemyPool = new();
     private readonly Queue<GameObject> _strongEnemyPool = new();
 
+    [SerializeField] private Transform enemyParent;
+    [SerializeField] private Transform strongEnemyParent;  
     
-    
-
     private int _currentWave;
     private readonly List<GameObject> _aliveEnemies = new();
 
@@ -35,7 +35,7 @@ public class BasicSpawner : MonoBehaviour
     {
         for (var i = 0; i < enemyPoolSize; i++)
         {
-            var obj = Instantiate(enemyPrefab);
+            var obj = Instantiate(enemyPrefab,enemyParent);
             obj.name = $"Enemy_{i}";
             obj.SetActive(false);
             _enemyPool.Enqueue(obj);                                        // Adds 70 (enemyPoolSize) enemy to pool
@@ -43,7 +43,7 @@ public class BasicSpawner : MonoBehaviour
 
         for (var i = 0; i < strongEnemyPoolSize; i++)
         {
-            var obj = Instantiate(strongEnemyPrefab);
+            var obj = Instantiate(strongEnemyPrefab,strongEnemyParent);
             obj.name = $"Strong Enemy_{i}";
             obj.SetActive(false);
             _strongEnemyPool.Enqueue(obj);                                 // Adds 40 (strongEnemyPoolSize) strong enemy to pool
@@ -79,7 +79,7 @@ public class BasicSpawner : MonoBehaviour
             for (var j = 0; j < enemyCount; j++)
             {
                 var spawnPos = GetRandomSpawnPosition(center);
-                var enemy = GetFromPool(_enemyPool, enemyPrefab);
+                var enemy = GetFromPool(_enemyPool, enemyPrefab,enemyParent);
                 enemy.transform.position = spawnPos;
                 enemy.SetActive(true);
                 _aliveEnemies.Add(enemy);
@@ -88,7 +88,7 @@ public class BasicSpawner : MonoBehaviour
             for (var j = 0; j < strongEnemyCount; j++)
             {
                 var spawnPos = GetRandomSpawnPosition(center);
-                var strongEnemy = GetFromPool(_strongEnemyPool, strongEnemyPrefab);
+                var strongEnemy = GetFromPool(_strongEnemyPool, strongEnemyPrefab,enemyParent);
                 strongEnemy.transform.position = spawnPos;
                 strongEnemy.SetActive(true);
                 _aliveEnemies.Add(strongEnemy);
@@ -112,16 +112,17 @@ public class BasicSpawner : MonoBehaviour
         }
     }
 
-    private GameObject GetFromPool(Queue<GameObject> pool, GameObject prefab)
+    private GameObject GetFromPool(Queue<GameObject> pool, GameObject prefab, Transform parent)
     {
         if (pool.Count > 0)
         {
             var obj = pool.Dequeue();
+            obj.transform.SetParent(parent);
             return obj;
         }
         else
         {
-            var obj = Instantiate(prefab);
+            var obj = Instantiate(prefab,parent);
             return obj;
         }
     }

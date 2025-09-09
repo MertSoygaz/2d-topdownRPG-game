@@ -8,16 +8,16 @@ public class SkillManager : MonoBehaviour
     [SerializeField] private TMP_Text levelInfoText1;
     [SerializeField] private TMP_Text levelInfoText2;
     [SerializeField] private TMP_Text levelInfoText3;
+    
     [SerializeField] private Image skill4CooldownImage;
     [SerializeField] private GameObject redHitEffect;
     [SerializeField] private GameObject blackHitEffect;
 
     [Header("Skill Data (ScriptableObject)")]
-    [SerializeField] private SkillData skillDataAsset;
+    [SerializeField] private SkillData skillData;
 
     private Shooting _shooting;
     private bool _isSkill4OnCooldown;
-
     private int _skill1Level;
     private int _skill2Level;
     private int _skill3Level;
@@ -35,7 +35,7 @@ public class SkillManager : MonoBehaviour
 
     public void UpgradeSkill1()
     {
-        var info = skillDataAsset.GetSkill(SkillType.Skill1);
+        var info = skillData.GetSkill(SkillType.Skill1);
         TryUpgradeSkill(ref _skill1Level, info, levelInfoText1, () =>
         {
             _shooting.ShootInterval = Mathf.Max(0.1f, _shooting.ShootInterval - 0.1f);
@@ -44,7 +44,7 @@ public class SkillManager : MonoBehaviour
 
     public void UpgradeSkill2()
     {
-        var info = skillDataAsset.GetSkill(SkillType.Skill2);
+        var info = skillData.GetSkill(SkillType.Skill2);
         TryUpgradeSkill(ref _skill2Level, info, levelInfoText2, () =>
         {
             _shooting.ArrowSpeed += 1f;
@@ -53,7 +53,7 @@ public class SkillManager : MonoBehaviour
 
     public void UpgradeSkill3()
     {
-        var info = skillDataAsset.GetSkill(SkillType.Skill3);
+        var info = skillData.GetSkill(SkillType.Skill3);
         TryUpgradeSkill(ref _skill3Level, info, levelInfoText3, () =>
         {
             _shooting.ArrowCount = _skill3Level + 1;
@@ -62,7 +62,7 @@ public class SkillManager : MonoBehaviour
 
     public void UseSkill4()
     {
-        var info = skillDataAsset.GetSkill(SkillType.Skill4);
+        var info = skillData.GetSkill(SkillType.Skill4);
 
         if (_isSkill4OnCooldown)
         {
@@ -148,7 +148,7 @@ public class SkillManager : MonoBehaviour
 
     private void UpdateSkillUI(SkillType type, TMP_Text text, int level)
     {
-        var info = skillDataAsset.GetSkill(type);
+        var info = skillData.GetSkill(type);
         text.text = level >= info.maxLevel ? "MAX" : level.ToString();
     }
 }
